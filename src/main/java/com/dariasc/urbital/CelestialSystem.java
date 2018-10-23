@@ -9,7 +9,10 @@ public class CelestialSystem implements CelestialParent {
     @Getter
     private CelestialBody parent;
 
-    private CelestialSystem(CelestialBody body) {
+    @Getter
+    private float massMultiplier = 0.5f;
+
+    CelestialSystem(CelestialBody body) {
         parent = body;
     }
 
