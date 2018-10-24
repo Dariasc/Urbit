@@ -6,13 +6,14 @@ import javax.swing.*;
 
 public class Urbital {
 
-    public static final double G = 6.674*Math.pow(10,-11);
+    public static final double G = 6.674 * Math.pow(10,-11);
 
     public static int w = 800, h = 600;
     public static CelestialSystem system;
 
     public static void main(String[] args) {
         system = toySystem();
+        system.getParent().injectChildren();
 
         JFrame frame = new JFrame("Urbit");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -24,7 +25,7 @@ public class Urbital {
 
     public static CelestialSystem toySystem() {
         return new CelestialSystem(new CelestialBody.Builder("Sol", 50)
-                .withChild(new CelestialBody.Builder("Kerbin", 20, new Orbit(0.017f, 200))
+                .withChild(new CelestialBody.Builder("Kerbin", 20, new Orbit(0.6f, 200))
                         .build())
                 .build());
     }

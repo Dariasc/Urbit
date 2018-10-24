@@ -1,25 +1,35 @@
 package com.dariasc.urbital;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.util.HashSet;
 import java.util.Set;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CelestialBody implements CelestialParent {
 
-    @Getter
+    @Getter @Setter
+    private CelestialBody parent;
+    @Getter @NonNull
     private Set<CelestialBody> children;
 
-    @Getter
+    @Getter @NonNull
     private String name;
-    @Getter
+    @Getter @NonNull
     private float mass;
-    @Getter
+    @Getter @NonNull
     private Orbit orbit;
+
+    public void init() {
+        if (parent != null) {
+            orbit.init();
+        }
+    }
 
     public Shape body() {
         float rad = Urbital.system.getMassMultiplier() * mass;
@@ -28,6 +38,17 @@ public class CelestialBody implements CelestialParent {
 
     public Shape orbit() {
         return new Ellipse2D.Float((Urbital.w / 2) - orbit.getPeriapsis(), (Urbital.h / 2) - orbit.getSemiMinorAxis(), orbit.getSemiMajorAxis() * 2, orbit.getSemiMinorAxis() * 2);
+    }
+
+    public void injectChildren() {
+        // Will inject this parent instance into children instances
+        for (CelestialBody child : children) {
+            child.parent = this;
+            child.injectChildren();
+        }
+        orbit.setBody(this);
+        // Can assure that all children will be initialized before init() is called
+        this.init();
     }
 
     public static class Builder {
@@ -48,8 +69,6 @@ public class CelestialBody implements CelestialParent {
             this.name = name;
             this.mass = mass;
             this.orbit = orbit;
-
-            System.out.println("[" + name + "] " + orbit.getPeriod() + " days");
         }
 
         public Builder withChild(CelestialBody celestialBody) {

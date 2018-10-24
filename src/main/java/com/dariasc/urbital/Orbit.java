@@ -5,6 +5,8 @@ import lombok.Data;
 @Data
 public class Orbit {
 
+    private CelestialBody body;
+
     private float eccentricity;
     private float semiMajorAxis;
     private float semiMinorAxis;
@@ -21,8 +23,11 @@ public class Orbit {
 
         this.periapsis = semiMajorAxis * (1 - eccentricity);
         this.apoapsis = semiMajorAxis * (1 + eccentricity);
+    }
 
-        this.period = 2 * (float) Math.PI * (float) Math.sqrt(Math.pow(semiMajorAxis, 3) / (Urbital.G * 50));
+    public void init() {
+        // Parent object will be provided
+        this.period = 2 * (float) Math.PI * (float) Math.sqrt(Math.pow(semiMajorAxis, 3) / (Urbital.G * (body.getParent().getMass())));
     }
 
 }
